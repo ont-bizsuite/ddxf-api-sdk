@@ -7,26 +7,31 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ont-bizsuite/ddxf-api-sdk/pkg/forward"
+	io "github.com/ont-bizsuite/ddxf-api-sdk/pkg/io/datameta"
+	ddxf_sdk "github.com/ont-bizsuite/ddxf-sdk"
 	"github.com/ontio/ontology-crypto/keypair"
 	ontology_go_sdk "github.com/ontio/ontology-go-sdk"
 	"github.com/ontio/ontology-go-sdk/utils"
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/forward"
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/instance"
-	io "github.com/zhiqiangxu/ddxf-sdk/pkg/io/datameta"
 )
 
 type DataMetaSdk struct {
-	addr string
+	ddxfAPIAddr     string
+	ddxfContractSdk *ddxf_sdk.DdxfSdk
 }
 
-func NewDataMetaSdk(addr string) *DataMetaSdk {
+func NewDataMetaSdk(ddxfAPIAddr, ontologyApiAddr string, payer *ontology_go_sdk.Account) *DataMetaSdk {
+
+	ddxfContractSdk := ddxf_sdk.NewDdxfSdk(ontologyApiAddr)
+	ddxfContractSdk.SetPayer(payer)
 	return &DataMetaSdk{
-		addr: addr,
+		ddxfAPIAddr:     ddxfAPIAddr,
+		ddxfContractSdk: ddxfContractSdk,
 	}
 }
 
-func (m *DataMetaSdk) SetAddr(addr string) {
-	m.addr = addr
+func (m *DataMetaSdk) SetDDXFAPIAddr(ddxfAPIAddr string) {
+	m.ddxfAPIAddr = ddxfAPIAddr
 }
 
 func (m *DataMetaSdk) CreateDataMeta(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.CreateDataMetaInput, controller *ontology_go_sdk.Account) error {
@@ -58,7 +63,7 @@ func (m *DataMetaSdk) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 		"DDXF_PK":    hex.EncodeToString(pk),
 		"DDXF_SIGN":  hex.EncodeToString(sig),
 	}
-	code, _, res, err := forward.PostJSONRequest(m.addr+uri, bs, header)
+	code, _, res, err := forward.PostJSONRequest(m.ddxfAPIAddr+uri, bs, header)
 	if err != nil {
 		return
 	}
@@ -105,15 +110,15 @@ func (m *DataMetaSdk) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 	if err != nil {
 		return
 	}
-	err = instance.DDXFSdk().SignTx(mutTx, controller)
+	err = m.ddxfContractSdk.SignTx(mutTx, controller)
 	if err != nil {
 		return
 	}
-	txHash, err := instance.DDXFSdk().GetOntologySdk().SendTransaction(mutTx)
+	txHash, err := m.ddxfContractSdk.GetOntologySdk().SendTransaction(mutTx)
 	if err != nil {
 		return
 	}
-	event, err := instance.DDXFSdk().GetSmartCodeEvent(txHash.ToHexString())
+	event, err := m.ddxfContractSdk.GetSmartCodeEvent(txHash.ToHexString())
 	if err != nil {
 		return
 	}

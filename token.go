@@ -6,26 +6,30 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ont-bizsuite/ddxf-api-sdk/pkg/forward"
+	io "github.com/ont-bizsuite/ddxf-api-sdk/pkg/io/token"
+	ddxf_sdk "github.com/ont-bizsuite/ddxf-sdk"
 	"github.com/ontio/ontology-crypto/keypair"
 	ontology_go_sdk "github.com/ontio/ontology-go-sdk"
 	"github.com/ontio/ontology-go-sdk/utils"
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/forward"
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/instance"
-	io "github.com/zhiqiangxu/ddxf-sdk/pkg/io/token"
 )
 
 type TokenSdk struct {
-	addr string
+	ddxfAPIAddr     string
+	ddxfContractSdk *ddxf_sdk.DdxfSdk
 }
 
-func NewTokenSdk(addr string) *TokenSdk {
+func NewTokenSdk(ddxfAPIAddr, ontologyApiAddr string, payer *ontology_go_sdk.Account) *TokenSdk {
+	ddxfContractSdk := ddxf_sdk.NewDdxfSdk(ontologyApiAddr)
+	ddxfContractSdk.SetPayer(payer)
 	return &TokenSdk{
-		addr: addr,
+		ddxfAPIAddr:     ddxfAPIAddr,
+		ddxfContractSdk: ddxfContractSdk,
 	}
 }
 
-func (ts *TokenSdk) SetAddr(addr string) {
-	ts.addr = addr
+func (ts *TokenSdk) SetDDXFAPIAddr(ddxfAPIAddr string) {
+	ts.ddxfAPIAddr = ddxfAPIAddr
 }
 
 func (ts *TokenSdk) VerifyToken(input io.VerifyTokenInput) (err error) {
@@ -85,7 +89,7 @@ func (ts *TokenSdk) GenerateToken(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 	if err != nil {
 		return
 	}
-	evt, err := instance.DDXFSdk().GetSmartCodeEvent(txHash)
+	evt, err := ts.ddxfContractSdk.GetSmartCodeEvent(txHash)
 	if err != nil {
 		return
 	}
@@ -166,7 +170,7 @@ func (ts *TokenSdk) CreateTokenTemplate(ontId string, ontIdAcc *ontology_go_sdk.
 	if err != nil {
 		return
 	}
-	evt, _ := instance.DDXFSdk().GetSmartCodeEvent(txHash)
+	evt, _ := ts.ddxfContractSdk.GetSmartCodeEvent(txHash)
 	for _, notify := range evt.Notify {
 		states := notify.States.([]interface{})
 		if len(states) != 4 && states[0] == "createTokenTemplate" {
@@ -291,7 +295,7 @@ func (m *TokenSdk) request(ontId string, ontIdAcc *ontology_go_sdk.Account, inpu
 		}
 	}
 
-	code, _, res, err := forward.PostJSONRequest(m.addr+uri, bs, header)
+	code, _, res, err := forward.PostJSONRequest(m.ddxfAPIAddr+uri, bs, header)
 	if err != nil {
 		return
 	}
@@ -305,7 +309,7 @@ func (m *TokenSdk) request(ontId string, ontIdAcc *ontology_go_sdk.Account, inpu
 	}
 	return
 }
-func (m *TokenSdk) handTx(txHex string, controller *ontology_go_sdk.Account) (txhash string, err error) {
+func (ts *TokenSdk) handTx(txHex string, controller *ontology_go_sdk.Account) (txhash string, err error) {
 	tx, err := utils.TransactionFromHexString(txHex)
 	if err != nil {
 		return
@@ -314,15 +318,15 @@ func (m *TokenSdk) handTx(txHex string, controller *ontology_go_sdk.Account) (tx
 	if err != nil {
 		return
 	}
-	err = instance.DDXFSdk().SignTx(mutTx, controller)
+	err = ts.ddxfContractSdk.SignTx(mutTx, controller)
 	if err != nil {
 		return
 	}
-	txHash, err := instance.DDXFSdk().GetOntologySdk().SendTransaction(mutTx)
+	txHash, err := ts.ddxfContractSdk.GetOntologySdk().SendTransaction(mutTx)
 	if err != nil {
 		return
 	}
-	event, err := instance.DDXFSdk().GetSmartCodeEvent(txHash.ToHexString())
+	event, err := ts.ddxfContractSdk.GetSmartCodeEvent(txHash.ToHexString())
 	if err != nil {
 		return
 	}

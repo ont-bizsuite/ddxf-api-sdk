@@ -7,22 +7,26 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ont-bizsuite/ddxf-api-sdk/pkg/forward"
+	io "github.com/ont-bizsuite/ddxf-api-sdk/pkg/io/mp"
+	ddxf_sdk "github.com/ont-bizsuite/ddxf-sdk"
 	"github.com/ontio/ontology-crypto/keypair"
 	ontology_go_sdk "github.com/ontio/ontology-go-sdk"
 	"github.com/ontio/ontology-go-sdk/utils"
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/forward"
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/instance"
-	io "github.com/zhiqiangxu/ddxf-sdk/pkg/io/mp"
 )
 
 // Marketplace ...
 type Marketplace struct {
-	addr string
+	ddxfAPIAddr     string
+	ddxfContractSdk *ddxf_sdk.DdxfSdk
 }
 
-func NewMarketplace(addr string) *Marketplace {
+func NewMarketplace(ddxfAPIAddr, ontologyApiAddr string, payer *ontology_go_sdk.Account) *Marketplace {
+	ddxfContractSdk := ddxf_sdk.NewDdxfSdk(ontologyApiAddr)
+	ddxfContractSdk.SetPayer(payer)
 	return &Marketplace{
-		addr: addr,
+		ddxfAPIAddr:     ddxfAPIAddr,
+		ddxfContractSdk: ddxfContractSdk,
 	}
 }
 
@@ -46,7 +50,7 @@ func (mp *Marketplace) GetItem(input io.GetItemInput) (*io.GetItemOutput, error)
 	if err != nil {
 		return nil, err
 	}
-	code, _, res, err := forward.PostJSONRequest(mp.addr+io.GetItemURI, bs, nil)
+	code, _, res, err := forward.PostJSONRequest(mp.ddxfAPIAddr+io.GetItemURI, bs, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +70,7 @@ func (mp *Marketplace) GetItem(input io.GetItemInput) (*io.GetItemOutput, error)
 	return &out, nil
 }
 
-func (m *Marketplace) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Account, input interface{}, uri string, controller []*ontology_go_sdk.Account) (err error) {
+func (mp *Marketplace) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Account, input interface{}, uri string, controller []*ontology_go_sdk.Account) (err error) {
 	bs, err := json.Marshal(input)
 	if err != nil {
 		return
@@ -81,7 +85,7 @@ func (m *Marketplace) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 		"DDXF_PK":    hex.EncodeToString(pk),
 		"DDXF_SIGN":  hex.EncodeToString(sig),
 	}
-	code, _, res, err := forward.PostJSONRequest(m.addr+uri, bs, header)
+	code, _, res, err := forward.PostJSONRequest(mp.ddxfAPIAddr+uri, bs, header)
 	if err != nil {
 		return
 	}
@@ -135,16 +139,16 @@ func (m *Marketplace) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 		return
 	}
 	for _, con := range controller {
-		err = instance.DDXFSdk().SignTx(mutTx, con)
+		err = mp.ddxfContractSdk.SignTx(mutTx, con)
 		if err != nil {
 			return
 		}
 	}
-	txHash, err := instance.DDXFSdk().GetOntologySdk().SendTransaction(mutTx)
+	txHash, err := mp.ddxfContractSdk.GetOntologySdk().SendTransaction(mutTx)
 	if err != nil {
 		return
 	}
-	event, err := instance.DDXFSdk().GetSmartCodeEvent(txHash.ToHexString())
+	event, err := mp.ddxfContractSdk.GetSmartCodeEvent(txHash.ToHexString())
 	if err != nil {
 		return
 	}

@@ -1,8 +1,8 @@
 package token
 
 import (
+	"github.com/ont-bizsuite/ddxf-api-sdk/pkg/io"
 	"github.com/ontio/ontology/common"
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/io"
 )
 
 // VerifyTokenInput ...

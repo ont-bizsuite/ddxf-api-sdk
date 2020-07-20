@@ -1,10 +1,10 @@
 package mp
 
 import (
+	"github.com/ont-bizsuite/ddxf-api-sdk/pkg/io"
 	"github.com/ont-bizsuite/ddxf-sdk/market_place_contract"
 	"github.com/ont-bizsuite/ddxf-sdk/split_policy_contract"
 	"github.com/ontio/ontology/common"
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/io"
 )
 
 // PublishItemInput ...

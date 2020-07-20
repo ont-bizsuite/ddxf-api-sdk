@@ -1,7 +1,7 @@
 package meta
 
 import (
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/io"
+	"github.com/ont-bizsuite/ddxf-api-sdk/pkg/io"
 )
 
 // IDSign ...

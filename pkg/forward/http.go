@@ -1,7 +1,6 @@
 package forward
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -131,7 +130,7 @@ func GenericForward(req *http.Request, prefix, remoteAddr, schema string) (resp 
 		}
 	}
 
-	begin := time.Now()
+	// begin := time.Now()
 	resp, err = client.Do(httpReq)
 
 	return

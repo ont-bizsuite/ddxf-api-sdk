@@ -1,6 +1,6 @@
 package datameta
 
-import "github.com/zhiqiangxu/ddxf-sdk/pkg/io"
+import "github.com/ont-bizsuite/ddxf-api-sdk/pkg/io"
 
 // CreateDataMetaInput ...
 // IDSign

@@ -8,8 +8,8 @@ import (
 
 	"github.com/ontio/ontology-crypto/keypair"
 	ontology_go_sdk "github.com/ontio/ontology-go-sdk"
-	"github.com/zhiqiangxu/ddxf-sdk/pkg/forward"
-	io "github.com/zhiqiangxu/ddxf-sdk/pkg/io/meta"
+	"github.com/ont-bizsuite/ddxf-api-sdk/pkg/forward"
+	io "github.com/ont-bizsuite/ddxf-api-sdk/pkg/io/meta"
 )
 
 // MetaSdk ...
