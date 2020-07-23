@@ -156,7 +156,7 @@ func (ts *TokenSdk) GetToken(ontId string, ontIdAcc *ontology_go_sdk.Account, in
 	return
 }
 
-func (ts *TokenSdk) CreateTokenTemplate(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.AddTokenAgentInput, acc *ontology_go_sdk.Account) (tokenTemplateId string, err error) {
+func (ts *TokenSdk) CreateTokenTemplate(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.CreateTokenTemplateInput, acc *ontology_go_sdk.Account) (tokenTemplateId string, err error) {
 	res, err := ts.request(ontId, ontIdAcc, input, io.CreateTokenTemplateURI)
 	if err != nil {
 		return

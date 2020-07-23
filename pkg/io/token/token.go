@@ -191,11 +191,6 @@ type CreateTokenTemplateOutput struct {
 	Tx string
 }
 
-// CreateTokenTemplateEvent ...
-type CreateTokenTemplateEvent struct {
-	TokenTemplateID string
-}
-
 // UpdateTokenTemplateInput ...
 type UpdateTokenTemplateInput struct {
 	// monitored above
@@ -323,9 +318,7 @@ type GenerateTokenInput struct {
 	// amount of token
 	N int
 }
-type GenerateTokenEvent struct {
-	TokenId string
-}
+
 
 // GenerateTokenOutput ...
 // swagger:model GenerateTokenOutput
