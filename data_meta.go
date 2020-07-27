@@ -82,7 +82,7 @@ func (m *DataMetaSdk) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 	var txHex string
 	if strings.Contains(uri, "remove") {
 		output := io.CreateDataMetaOutput{}
-		err = json.Unmarshal(res, output)
+		err = json.Unmarshal(res, &output)
 		if err != nil {
 			return
 		}
@@ -90,7 +90,7 @@ func (m *DataMetaSdk) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 		data = output
 	} else if strings.Contains(uri, "update") {
 		output := io.UpdateDataMetaOutput{}
-		err = json.Unmarshal(res, output)
+		err = json.Unmarshal(res, &output)
 		if err != nil {
 			return
 		}
@@ -98,7 +98,7 @@ func (m *DataMetaSdk) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 		data = output
 	} else if strings.Contains(uri, "create") {
 		output := io.CreateDataMetaOutput{}
-		err = json.Unmarshal(res, output)
+		err = json.Unmarshal(res, &output)
 		if err != nil {
 			return
 		}
