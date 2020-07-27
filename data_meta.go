@@ -117,7 +117,7 @@ func (m *DataMetaSdk) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 	if err != nil {
 		return
 	}
-	err = m.ddxfContractSdk.SignTx(mutTx, controller)
+	err = m.ddxfContractSdk.GetOntologySdk().SignToTransaction(mutTx, controller)
 	if err != nil {
 		return
 	}
