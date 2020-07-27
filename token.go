@@ -48,26 +48,28 @@ func (ts *TokenSdk) VerifyToken(input io.VerifyTokenInput) (err error) {
 	return fmt.Errorf("failed")
 }
 
-func (ts *TokenSdk) UseToken(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.UseTokenInput, tokenOwner *ontology_go_sdk.Account) (err error) {
+func (ts *TokenSdk) UseToken(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.UseTokenInput, tokenOwner *ontology_go_sdk.Account) (out io.UseTokenOutput, err error) {
 	res, err := ts.request(ontId, ontIdAcc, input, io.UseTokenURI)
 	if err != nil {
 		return
 	}
-	var out io.UseTokenOutput
-	err = json.Unmarshal(res, out)
+	err = json.Unmarshal(res, &out)
 	if err != nil {
 		return
 	}
 	_, err = ts.handTx(out.Tx, tokenOwner)
+	if err != nil {
+		return
+	}
 	return
 }
-func (ts *TokenSdk) TransferToken(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.TransferTokenInput, tokenOwner *ontology_go_sdk.Account) (err error) {
+
+func (ts *TokenSdk) TransferToken(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.TransferTokenInput, tokenOwner *ontology_go_sdk.Account) (out io.TransferTokenOutput, err error) {
 	res, err := ts.request(ontId, ontIdAcc, input, io.TransferTokenURI)
 	if err != nil {
 		return
 	}
-	var out io.TransferTokenOutput
-	err = json.Unmarshal(res, out)
+	err = json.Unmarshal(res, &out)
 	if err != nil {
 		return
 	}
