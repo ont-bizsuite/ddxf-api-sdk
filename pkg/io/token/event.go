@@ -1,6 +1,9 @@
 package token
 
-import "github.com/ont-bizsuite/ddxf-sdk/market_place_contract"
+import (
+	"github.com/ont-bizsuite/ddxf-sdk/market_place_contract"
+	"github.com/klaytn/klaytn/common"
+)
 
 // UseTokenEvent ...
 type UseTokenEvent struct {
@@ -27,6 +30,20 @@ type CreateTokenTemplateEvent struct {
 	Creator         string
 	TT              *market_place_contract.TokenTemplate
 	TokenTemplateID string
+}
+
+type UpdateTokenTemplateEvent struct {
+	TT              *market_place_contract.TokenTemplate
+	TokenTemplateID string
+}
+
+type RemoveTokenTemplateEvent struct {
+	TokenTemplateID string
+}
+
+type AuthorizeTokenTemplateEvent struct {
+	TokenTemplateID string
+	Addrs []common.Address
 }
 
 type GenerateTokenEvent struct {

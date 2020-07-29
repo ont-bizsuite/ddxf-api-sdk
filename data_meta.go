@@ -81,7 +81,7 @@ func (m *DataMetaSdk) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Accoun
 	}
 	var txHex string
 	if strings.Contains(uri, "remove") {
-		output := io.CreateDataMetaOutput{}
+		output := io.RemoveDataMetaOutput{}
 		err = json.Unmarshal(res, &output)
 		if err != nil {
 			return
