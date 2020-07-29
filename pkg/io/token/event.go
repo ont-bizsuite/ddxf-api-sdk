@@ -2,7 +2,7 @@ package token
 
 import (
 	"github.com/ont-bizsuite/ddxf-sdk/market_place_contract"
-	"github.com/klaytn/klaytn/common"
+	"github.com/ontio/ontology/common"
 )
 
 // UseTokenEvent ...
@@ -43,11 +43,12 @@ type RemoveTokenTemplateEvent struct {
 
 type AuthorizeTokenTemplateEvent struct {
 	TokenTemplateID string
-	Addrs []common.Address
+	Addrs           []common.Address
 }
 
 type GenerateTokenEvent struct {
 	Account         string
+	To              string
 	TokenTemplateId string
 	N               int
 	TokenId         string
