@@ -30,25 +30,29 @@ func NewMarketplace(ddxfAPIAddr, ontologyApiAddr string, payer *ontology_go_sdk.
 	}
 }
 
-func (mp *Marketplace) PublishItem(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.PublishItemInput, seller, mpAcc *ontology_go_sdk.Account) (out io.PublishItemOutput, err error) {
-	res, err := mp.handleInner(ontId, ontIdAcc, input, io.PublishItemURI, []*ontology_go_sdk.Account{seller, mpAcc})
+func (mp *Marketplace) PublishItem(ontIdAcc *ontology_go_sdk.Account, input io.PublishItemInput, seller, mpAcc *ontology_go_sdk.Account) (out io.PublishItemOutput, err error) {
+
+	res, err := mp.handleInner(ontIdAcc, input, io.PublishItemURI, []*ontology_go_sdk.Account{seller, mpAcc})
 	out = res.(io.PublishItemOutput)
 	return
 }
-func (mp *Marketplace) UpdateItem(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.UpdateItemInput, seller *ontology_go_sdk.Account) (out io.UpdateItemOutput, err error) {
-	res, err := mp.handleInner(ontId, ontIdAcc, input, io.UpdateItemURI, []*ontology_go_sdk.Account{seller})
+func (mp *Marketplace) UpdateItem(ontIdAcc *ontology_go_sdk.Account, input io.UpdateItemInput, seller *ontology_go_sdk.Account) (out io.UpdateItemOutput, err error) {
+
+	res, err := mp.handleInner(ontIdAcc, input, io.UpdateItemURI, []*ontology_go_sdk.Account{seller})
 	out = res.(io.UpdateItemOutput)
 	return
 }
 
-func (mp *Marketplace) DeleteItem(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.DeleteItemInput, acc *ontology_go_sdk.Account) (out io.DeleteItemOutput, err error) {
-	res, err := mp.handleInner(ontId, ontIdAcc, input, io.DeleteItemURI, []*ontology_go_sdk.Account{acc})
+func (mp *Marketplace) DeleteItem(ontIdAcc *ontology_go_sdk.Account, input io.DeleteItemInput, acc *ontology_go_sdk.Account) (out io.DeleteItemOutput, err error) {
+
+	res, err := mp.handleInner(ontIdAcc, input, io.DeleteItemURI, []*ontology_go_sdk.Account{acc})
 	out = res.(io.DeleteItemOutput)
 	return
 }
 
-func (mp *Marketplace) BuyItem(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.BuyItemInput, buyer *ontology_go_sdk.Account) (out io.BuyItemOutput, err error) {
-	res, err := mp.handleInner(ontId, ontIdAcc, input, io.BuyItemURI, []*ontology_go_sdk.Account{buyer})
+func (mp *Marketplace) BuyItem(ontIdAcc *ontology_go_sdk.Account, input io.BuyItemInput, buyer *ontology_go_sdk.Account) (out io.BuyItemOutput, err error) {
+
+	res, err := mp.handleInner(ontIdAcc, input, io.BuyItemURI, []*ontology_go_sdk.Account{buyer})
 	out = res.(io.BuyItemOutput)
 	return
 }
@@ -78,18 +82,19 @@ func (mp *Marketplace) GetItem(input io.GetItemInput) (*io.GetItemOutput, error)
 	return &out, nil
 }
 
-func (mp *Marketplace) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Account, input interface{}, uri string, controller []*ontology_go_sdk.Account) (out interface{}, err error) {
+func (mp *Marketplace) handleInner(ontIDAcc *ontology_go_sdk.Account, input interface{}, uri string, controller []*ontology_go_sdk.Account) (out interface{}, err error) {
+	ontID := "did:ont:" + ontIDAcc.Address.ToBase58()
 	bs, err := json.Marshal(input)
 	if err != nil {
 		return
 	}
-	pk := keypair.SerializePublicKey(ontIdAcc.GetPublicKey())
-	sig, err := ontIdAcc.Sign(bs)
+	pk := keypair.SerializePublicKey(ontIDAcc.GetPublicKey())
+	sig, err := ontIDAcc.Sign(bs)
 	if err != nil {
 		return nil, err
 	}
 	header := map[string]string{
-		"DDXF_ONTID": ontId,
+		"DDXF_ONTID": ontID,
 		"DDXF_PK":    hex.EncodeToString(pk),
 		"DDXF_SIGN":  hex.EncodeToString(sig),
 	}

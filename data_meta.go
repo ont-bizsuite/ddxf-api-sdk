@@ -34,36 +34,40 @@ func (m *DataMetaSdk) SetDDXFAPIAddr(ddxfAPIAddr string) {
 	m.ddxfAPIAddr = ddxfAPIAddr
 }
 
-func (m *DataMetaSdk) CreateDataMeta(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.CreateDataMetaInput, controller *ontology_go_sdk.Account) (out io.CreateDataMetaOutput, err error) {
-	res, err := m.handleInner(ontId, ontIdAcc, input, io.CreateDataMetaURI, controller)
+func (m *DataMetaSdk) CreateDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.CreateDataMetaInput, controller *ontology_go_sdk.Account) (out io.CreateDataMetaOutput, err error) {
+
+	res, err := m.handleInner(ontIDAcc, input, io.CreateDataMetaURI, controller)
 	out = res.(io.CreateDataMetaOutput)
 	return
 }
 
-func (m *DataMetaSdk) UpdateDataMeta(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.UpdateDataMetaInput, controller *ontology_go_sdk.Account) (out io.UpdateDataMetaOutput, err error) {
-	res, err := m.handleInner(ontId, ontIdAcc, input, io.UpdateDataMetaURI, controller)
+func (m *DataMetaSdk) UpdateDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.UpdateDataMetaInput, controller *ontology_go_sdk.Account) (out io.UpdateDataMetaOutput, err error) {
+
+	res, err := m.handleInner(ontIDAcc, input, io.UpdateDataMetaURI, controller)
 	out = res.(io.UpdateDataMetaOutput)
 	return
 }
 
-func (m *DataMetaSdk) RemoveDataMeta(ontId string, ontIdAcc *ontology_go_sdk.Account, input io.RemoveDataMetaInput, controller *ontology_go_sdk.Account) (out io.RemoveDataMetaOutput, err error) {
-	res, err := m.handleInner(ontId, ontIdAcc, input, io.RemoveDataMetaURI, controller)
+func (m *DataMetaSdk) RemoveDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.RemoveDataMetaInput, controller *ontology_go_sdk.Account) (out io.RemoveDataMetaOutput, err error) {
+
+	res, err := m.handleInner(ontIDAcc, input, io.RemoveDataMetaURI, controller)
 	out = res.(io.RemoveDataMetaOutput)
 	return
 }
 
-func (m *DataMetaSdk) handleInner(ontId string, ontIdAcc *ontology_go_sdk.Account, input interface{}, uri string, controller *ontology_go_sdk.Account) (data interface{}, err error) {
+func (m *DataMetaSdk) handleInner(ontIDAcc *ontology_go_sdk.Account, input interface{}, uri string, controller *ontology_go_sdk.Account) (data interface{}, err error) {
+	ontID := "did:ont:" + ontIDAcc.Address.ToBase58()
 	bs, err := json.Marshal(input)
 	if err != nil {
 		return
 	}
-	pk := keypair.SerializePublicKey(ontIdAcc.GetPublicKey())
-	sig, err := ontIdAcc.Sign(bs)
+	pk := keypair.SerializePublicKey(ontIDAcc.GetPublicKey())
+	sig, err := ontIDAcc.Sign(bs)
 	if err != nil {
 		return nil, err
 	}
 	header := map[string]string{
-		"DDXF_ONTID": ontId,
+		"DDXF_ONTID": ontID,
 		"DDXF_PK":    hex.EncodeToString(pk),
 		"DDXF_SIGN":  hex.EncodeToString(sig),
 	}

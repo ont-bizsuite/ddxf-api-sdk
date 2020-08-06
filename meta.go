@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ontio/ontology-crypto/keypair"
-	ontology_go_sdk "github.com/ontio/ontology-go-sdk"
 	"github.com/ont-bizsuite/ddxf-api-sdk/pkg/forward"
 	io "github.com/ont-bizsuite/ddxf-api-sdk/pkg/io/meta"
+	"github.com/ontio/ontology-crypto/keypair"
+	ontology_go_sdk "github.com/ontio/ontology-go-sdk"
 )
 
 // MetaSdk ...
@@ -25,9 +25,9 @@ func NewMetaSdk(addr string) *MetaSdk {
 }
 
 // CreateMeta ...
-func (sdk *MetaSdk) CreateMeta(ontID string, ontIDAcc *ontology_go_sdk.Account, input io.CreateMetaInput) (metaID string, err error) {
+func (sdk *MetaSdk) CreateMeta(ontIDAcc *ontology_go_sdk.Account, input io.CreateMetaInput) (metaID string, err error) {
 
-	code, body, err := sdk.request(ontID, ontIDAcc, "/ddxf/meta/create", input)
+	code, body, err := sdk.request(ontIDAcc, "/ddxf/meta/create", input)
 	if code != http.StatusOK {
 		err = fmt.Errorf("code:%d body:%s", code, body)
 		return
@@ -49,8 +49,9 @@ func (sdk *MetaSdk) CreateMeta(ontID string, ontIDAcc *ontology_go_sdk.Account, 
 }
 
 // UpdateMeta ...
-func (sdk *MetaSdk) UpdateMeta(ontID string, ontIDAcc *ontology_go_sdk.Account, input io.UpdateMetaInput) (err error) {
-	code, body, err := sdk.request(ontID, ontIDAcc, "/ddxf/meta/update", input)
+func (sdk *MetaSdk) UpdateMeta(ontIDAcc *ontology_go_sdk.Account, input io.UpdateMetaInput) (err error) {
+
+	code, body, err := sdk.request(ontIDAcc, "/ddxf/meta/update", input)
 	if code != http.StatusOK {
 		err = fmt.Errorf("code:%d body:%s", code, body)
 		return
@@ -70,8 +71,9 @@ func (sdk *MetaSdk) UpdateMeta(ontID string, ontIDAcc *ontology_go_sdk.Account, 
 }
 
 // DeleteMeta ...
-func (sdk *MetaSdk) DeleteMeta(ontID string, ontIDAcc *ontology_go_sdk.Account, input io.DeleteMetaInput) (err error) {
-	code, body, err := sdk.request(ontID, ontIDAcc, "/ddxf/meta/delete", input)
+func (sdk *MetaSdk) DeleteMeta(ontIDAcc *ontology_go_sdk.Account, input io.DeleteMetaInput) (err error) {
+
+	code, body, err := sdk.request(ontIDAcc, "/ddxf/meta/delete", input)
 	if code != http.StatusOK {
 		err = fmt.Errorf("code:%d body:%s", code, body)
 		return
@@ -92,7 +94,7 @@ func (sdk *MetaSdk) DeleteMeta(ontID string, ontIDAcc *ontology_go_sdk.Account, 
 
 // GetMeta ...
 func (sdk *MetaSdk) GetMeta(input io.GetMetaInput) (metaResult map[string]interface{}, err error) {
-	code, body, err := sdk.request("", nil, "/ddxf/meta/get", input)
+	code, body, err := sdk.request(nil, "/ddxf/meta/get", input)
 	if code != http.StatusOK {
 		err = fmt.Errorf("code:%d body:%s", code, body)
 		return
@@ -113,14 +115,15 @@ func (sdk *MetaSdk) GetMeta(input io.GetMetaInput) (metaResult map[string]interf
 	return
 }
 
-func (sdk *MetaSdk) request(ontID string, ontIDAcc *ontology_go_sdk.Account, uri string, input interface{}) (code int, body []byte, err error) {
+func (sdk *MetaSdk) request(ontIDAcc *ontology_go_sdk.Account, uri string, input interface{}) (code int, body []byte, err error) {
 	bs, err := json.Marshal(input)
 	if err != nil {
 		return
 	}
 
 	var header map[string]string
-	if ontID != "" {
+	if ontIDAcc != nil {
+		ontID := "did:ont:" + ontIDAcc.Address.ToBase58()
 		pk := keypair.SerializePublicKey(ontIDAcc.GetPublicKey())
 		var sig []byte
 		sig, err = ontIDAcc.Sign(bs)
