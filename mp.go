@@ -18,26 +18,34 @@ import (
 // Marketplace ...
 type Marketplace struct {
 	ddxfAPIAddr     string
+	mpContract      string
 	ddxfContractSdk *ddxf_sdk.DdxfSdk
 }
 
-func NewMarketplace(ddxfAPIAddr, ontologyApiAddr string, payer *ontology_go_sdk.Account) *Marketplace {
+func NewMarketplace(ddxfAPIAddr, ontologyApiAddr, mpContract string, payer *ontology_go_sdk.Account) *Marketplace {
 	ddxfContractSdk := ddxf_sdk.NewDdxfSdk(ontologyApiAddr)
 	ddxfContractSdk.SetPayer(payer)
 	return &Marketplace{
 		ddxfAPIAddr:     ddxfAPIAddr,
+		mpContract:      mpContract,
 		ddxfContractSdk: ddxfContractSdk,
 	}
 }
 
 func (mp *Marketplace) PublishItem(ontIdAcc *ontology_go_sdk.Account, input io.PublishItemInput, seller, mpAcc *ontology_go_sdk.Account) (out io.PublishItemOutput, err error) {
 
+	if input.MPContract == "" {
+		input.MPContract = mp.mpContract
+	}
 	res, err := mp.handleInner(ontIdAcc, input, io.PublishItemURI, []*ontology_go_sdk.Account{seller, mpAcc})
 	out = res.(io.PublishItemOutput)
 	return
 }
 func (mp *Marketplace) UpdateItem(ontIdAcc *ontology_go_sdk.Account, input io.UpdateItemInput, seller *ontology_go_sdk.Account) (out io.UpdateItemOutput, err error) {
 
+	if input.MPContract == "" {
+		input.MPContract = mp.mpContract
+	}
 	res, err := mp.handleInner(ontIdAcc, input, io.UpdateItemURI, []*ontology_go_sdk.Account{seller})
 	out = res.(io.UpdateItemOutput)
 	return
@@ -45,6 +53,9 @@ func (mp *Marketplace) UpdateItem(ontIdAcc *ontology_go_sdk.Account, input io.Up
 
 func (mp *Marketplace) DeleteItem(ontIdAcc *ontology_go_sdk.Account, input io.DeleteItemInput, acc *ontology_go_sdk.Account) (out io.DeleteItemOutput, err error) {
 
+	if input.MPContract == "" {
+		input.MPContract = mp.mpContract
+	}
 	res, err := mp.handleInner(ontIdAcc, input, io.DeleteItemURI, []*ontology_go_sdk.Account{acc})
 	out = res.(io.DeleteItemOutput)
 	return
@@ -52,12 +63,18 @@ func (mp *Marketplace) DeleteItem(ontIdAcc *ontology_go_sdk.Account, input io.De
 
 func (mp *Marketplace) BuyItem(ontIdAcc *ontology_go_sdk.Account, input io.BuyItemInput, buyer *ontology_go_sdk.Account) (out io.BuyItemOutput, err error) {
 
+	if input.MPContract == "" {
+		input.MPContract = mp.mpContract
+	}
 	res, err := mp.handleInner(ontIdAcc, input, io.BuyItemURI, []*ontology_go_sdk.Account{buyer})
 	out = res.(io.BuyItemOutput)
 	return
 }
 
 func (mp *Marketplace) GetItem(input io.GetItemInput) (*io.GetItemOutput, error) {
+	if input.MPContract == "" {
+		input.MPContract = mp.mpContract
+	}
 	bs, err := json.Marshal(input)
 	if err != nil {
 		return nil, err

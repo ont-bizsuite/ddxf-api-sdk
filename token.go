@@ -16,14 +16,16 @@ import (
 
 type TokenSdk struct {
 	ddxfAPIAddr     string
+	tokenContract   string
 	ddxfContractSdk *ddxf_sdk.DdxfSdk
 }
 
-func NewTokenSdk(ddxfAPIAddr, ontologyApiAddr string, payer *ontology_go_sdk.Account) *TokenSdk {
+func NewTokenSdk(ddxfAPIAddr, ontologyApiAddr, tokenContract string, payer *ontology_go_sdk.Account) *TokenSdk {
 	ddxfContractSdk := ddxf_sdk.NewDdxfSdk(ontologyApiAddr)
 	ddxfContractSdk.SetPayer(payer)
 	return &TokenSdk{
 		ddxfAPIAddr:     ddxfAPIAddr,
+		tokenContract:   tokenContract,
 		ddxfContractSdk: ddxfContractSdk,
 	}
 }
@@ -49,6 +51,10 @@ func (ts *TokenSdk) VerifyToken(input io.VerifyTokenInput) (err error) {
 }
 
 func (ts *TokenSdk) UseToken(ontIdAcc *ontology_go_sdk.Account, input io.UseTokenInput, tokenOwner *ontology_go_sdk.Account) (out io.UseTokenOutput, err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
+
 	res, err := ts.request(ontIdAcc, input, io.UseTokenURI)
 	if err != nil {
 		return
@@ -65,6 +71,9 @@ func (ts *TokenSdk) UseToken(ontIdAcc *ontology_go_sdk.Account, input io.UseToke
 }
 
 func (ts *TokenSdk) TransferToken(ontIdAcc *ontology_go_sdk.Account, input io.TransferTokenInput, tokenOwner *ontology_go_sdk.Account) (out io.TransferTokenOutput, err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.TransferTokenURI)
 	if err != nil {
 		return
@@ -78,6 +87,9 @@ func (ts *TokenSdk) TransferToken(ontIdAcc *ontology_go_sdk.Account, input io.Tr
 }
 
 func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.GenerateTokenInput, acc *ontology_go_sdk.Account) (tokenId string, err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.GenerateTokenURI)
 	if err != nil {
 		return
@@ -105,6 +117,9 @@ func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.Ge
 }
 
 func (ts *TokenSdk) SetTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.SetTokenAgentInput, acc *ontology_go_sdk.Account) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.SetTokenAgentURI)
 	if err != nil {
 		return
@@ -119,6 +134,9 @@ func (ts *TokenSdk) SetTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.Se
 }
 
 func (ts *TokenSdk) AddTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.AddTokenAgentInput, acc *ontology_go_sdk.Account) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.AddTokenAgentURI)
 	if err != nil {
 		return
@@ -133,6 +151,9 @@ func (ts *TokenSdk) AddTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.Ad
 }
 
 func (ts *TokenSdk) RemoveTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.AddTokenAgentInput, acc *ontology_go_sdk.Account) (err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.RemoveTokenAgentURI)
 	if err != nil {
 		return
@@ -147,6 +168,9 @@ func (ts *TokenSdk) RemoveTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io
 }
 
 func (ts *TokenSdk) GetToken(ontIdAcc *ontology_go_sdk.Account, input io.GetTokenInput, acc *ontology_go_sdk.Account) (out io.GetTokenOutput, err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.GetTokenURI)
 	if err != nil {
 		return
@@ -159,6 +183,9 @@ func (ts *TokenSdk) GetToken(ontIdAcc *ontology_go_sdk.Account, input io.GetToke
 }
 
 func (ts *TokenSdk) CreateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.CreateTokenTemplateInput, acc *ontology_go_sdk.Account) (tokenTemplateId string, err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.CreateTokenTemplateURI)
 	if err != nil {
 		return
@@ -183,6 +210,9 @@ func (ts *TokenSdk) CreateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input
 }
 
 func (ts *TokenSdk) UpdateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.UpdateTokenTemplateInput, acc *ontology_go_sdk.Account) (err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.UpdateTokenTemplateURI)
 	if err != nil {
 		return
@@ -196,6 +226,9 @@ func (ts *TokenSdk) UpdateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input
 	return
 }
 func (ts *TokenSdk) RemoveTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.RemoveTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.RemoveTokenTemplateURI)
 	if err != nil {
 		return
@@ -210,6 +243,9 @@ func (ts *TokenSdk) RemoveTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input
 }
 
 func (ts *TokenSdk) GetTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.GetTokenTemplateInput, acc *ontology_go_sdk.Account) (out io.GetTokenTemplateOutput, err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.GetTokenTemplateURI)
 	if err != nil {
 		return
@@ -222,6 +258,9 @@ func (ts *TokenSdk) GetTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io
 }
 
 func (ts *TokenSdk) SetTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.SetTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.SetTokenTemplateAuthURI)
 	if err != nil {
 		return
@@ -236,6 +275,9 @@ func (ts *TokenSdk) SetTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, inpu
 }
 
 func (ts *TokenSdk) AddTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.AddTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.AddTokenTemplateAuthURI)
 	if err != nil {
 		return
@@ -250,6 +292,9 @@ func (ts *TokenSdk) AddTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, inpu
 }
 
 func (ts *TokenSdk) RemoveTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.RemoveTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.RemoveTokenTemplateAuthURI)
 	if err != nil {
 		return
@@ -264,6 +309,9 @@ func (ts *TokenSdk) RemoveTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, i
 }
 
 func (ts *TokenSdk) ClearTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.ClearTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
 	res, err := ts.request(ontIdAcc, input, io.ClearTokenTemplateAuthURI)
 	if err != nil {
 		return
