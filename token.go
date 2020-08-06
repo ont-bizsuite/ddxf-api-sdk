@@ -325,6 +325,23 @@ func (ts *TokenSdk) ClearTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, in
 	return
 }
 
+func (ts *TokenSdk) SetMPContract(ontIdAcc *ontology_go_sdk.Account, input io.SetMPContractInput, acc *ontology_go_sdk.Account) (err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
+	res, err := ts.request(ontIdAcc, input, io.SetMPContractURI)
+	if err != nil {
+		return
+	}
+	var out io.SetMPContractOutput
+	err = json.Unmarshal(res, &out)
+	if err != nil {
+		return
+	}
+	_, err = ts.handTx(out.Tx, acc)
+	return
+}
+
 func (m *TokenSdk) request(ontIDAcc *ontology_go_sdk.Account, input interface{}, uri string) (res []byte, err error) {
 
 	bs, err := json.Marshal(input)
