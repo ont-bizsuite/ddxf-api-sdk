@@ -4,6 +4,9 @@
 
 `DDXF`由4个子模块组成：`meta`、`data meta`、`marketplace`、`token`，分别对应4个子`SDK`，下面分别进行介绍。
 
+
+------------------------------------------------
+
 ### meta sdk
 
 #### 初始化
@@ -44,6 +47,7 @@ func (sdk *MetaSdk) DeleteMeta(ontIDAcc *ontology_go_sdk.Account, input io.Delet
 ```golang
 func (sdk *MetaSdk) GetMeta(input io.GetMetaInput) (metaResult map[string]interface{}, err error)
 ```
+------------------------------------------------
 
 ### data meta sdk
 
@@ -71,6 +75,8 @@ func (m *DataMetaSdk) UpdateDataMeta(ontIdAcc *ontology_go_sdk.Account, input io
 ```golang
 func (m *DataMetaSdk) RemoveDataMeta(ontIdAcc *ontology_go_sdk.Account, input io.RemoveDataMetaInput, controller *ontology_go_sdk.Account) (out io.RemoveDataMetaOutput, err error)
 ```
+
+------------------------------------------------
 
 ### marketplace sdk
 
@@ -110,6 +116,8 @@ func (mp *Marketplace) BuyItem(ontIdAcc *ontology_go_sdk.Account, input io.BuyIt
 ```golang
 func (mp *Marketplace) GetItem(input io.GetItemInput) (*io.GetItemOutput, error)
 ```
+
+------------------------------------------------
 
 ### token sdk
 
