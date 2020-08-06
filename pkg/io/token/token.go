@@ -4,6 +4,21 @@ import (
 	"github.com/ont-bizsuite/ddxf-api-sdk/pkg/io"
 )
 
+// SetMPContractInput ...
+type SetMPContractInput struct {
+	// token contract address
+	TokenContract string
+	// marketplace contract address
+	MPContract string
+}
+
+// SetMPContractOutput ...
+type SetMPContractOutput struct {
+	io.BaseResp
+	// send with ontology sdk
+	Tx string
+}
+
 // VerifyTokenInput ...
 // AddressSign
 type VerifyTokenInput struct {
