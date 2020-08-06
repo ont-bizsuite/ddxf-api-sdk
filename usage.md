@@ -83,7 +83,7 @@ func (m *DataMetaSdk) RemoveDataMeta(ontIdAcc *ontology_go_sdk.Account, input io
 #### 初始化
 
 ```golang
-func NewMarketplace(ddxfAPIAddr, ontologyApiAddr string, payer *ontology_go_sdk.Account) *Marketplace
+func NewMarketplace(ddxfAPIAddr, ontologyApiAddr, mpContract string, payer *ontology_go_sdk.Account) *Marketplace
 ```
 
 
@@ -124,7 +124,7 @@ func (mp *Marketplace) GetItem(input io.GetItemInput) (*io.GetItemOutput, error)
 #### 初始化
 
 ```golang
-func NewTokenSdk(ddxfAPIAddr, ontologyApiAddr string, payer *ontology_go_sdk.Account) *TokenSdk
+func NewTokenSdk(ddxfAPIAddr, ontologyApiAddr, tokenContract string, payer *ontology_go_sdk.Account) *TokenSdk
 ```
 
 #### 验证token
