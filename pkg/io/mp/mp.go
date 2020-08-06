@@ -8,6 +8,8 @@ import (
 
 // PublishItemInput ...
 type PublishItemInput struct {
+	// mp contract address
+	MPContract string
 	// item id, should be new
 	ItemID string
 	// seller account
@@ -44,6 +46,8 @@ type PublishItemOutput struct {
 
 // UpdateItemInput ...
 type UpdateItemInput struct {
+	// mp contract address
+	MPContract string
 	// item id
 	ItemID string
 	// seller account
@@ -80,6 +84,8 @@ type UpdateItemOutput struct {
 
 // DeleteItemInput ...
 type DeleteItemInput struct {
+	// mp contract address
+	MPContract string
 	// item id
 	ItemID string
 }
@@ -94,6 +100,8 @@ type DeleteItemOutput struct {
 
 // BuyItemInput ...
 type BuyItemInput struct {
+	// mp contract address
+	MPContract string
 	// buyer account
 	Buyer string
 	// payer account
@@ -114,6 +122,8 @@ type BuyItemOutput struct {
 
 // GetItemInput ...
 type GetItemInput struct {
+	// mp contract address
+	MPContract string
 	// item id
 	ItemID string
 }
