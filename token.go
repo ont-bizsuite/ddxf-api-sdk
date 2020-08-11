@@ -50,7 +50,7 @@ func (ts *TokenSdk) VerifyToken(input io.VerifyTokenInput) (err error) {
 	return fmt.Errorf("failed")
 }
 
-func (ts *TokenSdk) UseToken(ontIdAcc *ontology_go_sdk.Account, input io.UseTokenInput, tokenOwner *ontology_go_sdk.Account) (out io.UseTokenOutput, err error) {
+func (ts *TokenSdk) UseToken(ontIdAcc *ontology_go_sdk.Account, input io.UseTokenInput) (out io.UseTokenOutput, err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -63,14 +63,14 @@ func (ts *TokenSdk) UseToken(ontIdAcc *ontology_go_sdk.Account, input io.UseToke
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, tokenOwner)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	if err != nil {
 		return
 	}
 	return
 }
 
-func (ts *TokenSdk) TransferToken(ontIdAcc *ontology_go_sdk.Account, input io.TransferTokenInput, tokenOwner *ontology_go_sdk.Account) (out io.TransferTokenOutput, err error) {
+func (ts *TokenSdk) TransferToken(ontIdAcc *ontology_go_sdk.Account, input io.TransferTokenInput) (out io.TransferTokenOutput, err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -82,11 +82,11 @@ func (ts *TokenSdk) TransferToken(ontIdAcc *ontology_go_sdk.Account, input io.Tr
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, tokenOwner)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
-func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.GenerateTokenInput, acc *ontology_go_sdk.Account) (tokenId string, err error) {
+func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.GenerateTokenInput) (tokenId string, err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -99,7 +99,7 @@ func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.Ge
 	if err != nil {
 		return
 	}
-	txHash, err := ts.handTx(out.Tx, acc)
+	txHash, err := ts.handTx(out.Tx, ontIdAcc)
 	if err != nil {
 		return
 	}
@@ -116,7 +116,7 @@ func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.Ge
 	return
 }
 
-func (ts *TokenSdk) SetTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.SetTokenAgentInput, acc *ontology_go_sdk.Account) {
+func (ts *TokenSdk) SetTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.SetTokenAgentInput) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -129,11 +129,11 @@ func (ts *TokenSdk) SetTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.Se
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
-func (ts *TokenSdk) AddTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.AddTokenAgentInput, acc *ontology_go_sdk.Account) {
+func (ts *TokenSdk) AddTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.AddTokenAgentInput) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -146,11 +146,11 @@ func (ts *TokenSdk) AddTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.Ad
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
-func (ts *TokenSdk) RemoveTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.AddTokenAgentInput, acc *ontology_go_sdk.Account) (err error) {
+func (ts *TokenSdk) RemoveTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.RemoveTokenAgentInput) (err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -163,11 +163,11 @@ func (ts *TokenSdk) RemoveTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
-func (ts *TokenSdk) GetToken(ontIdAcc *ontology_go_sdk.Account, input io.GetTokenInput, acc *ontology_go_sdk.Account) (out io.GetTokenOutput, err error) {
+func (ts *TokenSdk) GetToken(ontIdAcc *ontology_go_sdk.Account, input io.GetTokenInput) (out io.GetTokenOutput, err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -182,7 +182,7 @@ func (ts *TokenSdk) GetToken(ontIdAcc *ontology_go_sdk.Account, input io.GetToke
 	return
 }
 
-func (ts *TokenSdk) CreateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.CreateTokenTemplateInput, acc *ontology_go_sdk.Account) (tokenTemplateId string, err error) {
+func (ts *TokenSdk) CreateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.CreateTokenTemplateInput) (tokenTemplateId string, err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -195,7 +195,7 @@ func (ts *TokenSdk) CreateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input
 	if err != nil {
 		return
 	}
-	txHash, err := ts.handTx(out.Tx, acc)
+	txHash, err := ts.handTx(out.Tx, ontIdAcc)
 	if err != nil {
 		return
 	}
@@ -209,7 +209,7 @@ func (ts *TokenSdk) CreateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input
 	return
 }
 
-func (ts *TokenSdk) UpdateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.UpdateTokenTemplateInput, acc *ontology_go_sdk.Account) (err error) {
+func (ts *TokenSdk) UpdateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.UpdateTokenTemplateInput) (err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -222,10 +222,10 @@ func (ts *TokenSdk) UpdateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
-func (ts *TokenSdk) RemoveTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.RemoveTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+func (ts *TokenSdk) RemoveTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.RemoveTokenTemplateAuthInput) (err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -238,11 +238,11 @@ func (ts *TokenSdk) RemoveTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
-func (ts *TokenSdk) GetTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.GetTokenTemplateInput, acc *ontology_go_sdk.Account) (out io.GetTokenTemplateOutput, err error) {
+func (ts *TokenSdk) GetTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io.GetTokenTemplateInput) (out io.GetTokenTemplateOutput, err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -257,7 +257,7 @@ func (ts *TokenSdk) GetTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input io
 	return
 }
 
-func (ts *TokenSdk) SetTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.SetTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+func (ts *TokenSdk) SetTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.SetTokenTemplateAuthInput) (err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -270,11 +270,11 @@ func (ts *TokenSdk) SetTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, inpu
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
-func (ts *TokenSdk) AddTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.AddTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+func (ts *TokenSdk) AddTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.AddTokenTemplateAuthInput) (err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -287,11 +287,11 @@ func (ts *TokenSdk) AddTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, inpu
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
-func (ts *TokenSdk) RemoveTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.RemoveTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+func (ts *TokenSdk) RemoveTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.RemoveTokenTemplateAuthInput) (err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -304,11 +304,11 @@ func (ts *TokenSdk) RemoveTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, i
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
-func (ts *TokenSdk) ClearTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.ClearTokenTemplateAuthInput, acc *ontology_go_sdk.Account) (err error) {
+func (ts *TokenSdk) ClearTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, input io.ClearTokenTemplateAuthInput) (err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -321,11 +321,11 @@ func (ts *TokenSdk) ClearTokenTemplateAuth(ontIdAcc *ontology_go_sdk.Account, in
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
-func (ts *TokenSdk) SetMPContract(ontIdAcc *ontology_go_sdk.Account, input io.SetMPContractInput, acc *ontology_go_sdk.Account) (err error) {
+func (ts *TokenSdk) SetMPContract(ontIdAcc *ontology_go_sdk.Account, input io.SetMPContractInput) (err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -338,7 +338,7 @@ func (ts *TokenSdk) SetMPContract(ontIdAcc *ontology_go_sdk.Account, input io.Se
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, acc)
+	_, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 

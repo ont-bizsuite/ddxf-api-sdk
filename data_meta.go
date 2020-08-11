@@ -34,28 +34,28 @@ func (m *DataMetaSdk) SetDDXFAPIAddr(ddxfAPIAddr string) {
 	m.ddxfAPIAddr = ddxfAPIAddr
 }
 
-func (m *DataMetaSdk) CreateDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.CreateDataMetaInput, controller *ontology_go_sdk.Account) (out io.CreateDataMetaOutput, err error) {
+func (m *DataMetaSdk) CreateDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.CreateDataMetaInput) (out io.CreateDataMetaOutput, err error) {
 
-	res, err := m.handleInner(ontIDAcc, input, io.CreateDataMetaURI, controller)
+	res, err := m.handleInner(ontIDAcc, input, io.CreateDataMetaURI)
 	out = res.(io.CreateDataMetaOutput)
 	return
 }
 
-func (m *DataMetaSdk) UpdateDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.UpdateDataMetaInput, controller *ontology_go_sdk.Account) (out io.UpdateDataMetaOutput, err error) {
+func (m *DataMetaSdk) UpdateDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.UpdateDataMetaInput) (out io.UpdateDataMetaOutput, err error) {
 
-	res, err := m.handleInner(ontIDAcc, input, io.UpdateDataMetaURI, controller)
+	res, err := m.handleInner(ontIDAcc, input, io.UpdateDataMetaURI)
 	out = res.(io.UpdateDataMetaOutput)
 	return
 }
 
-func (m *DataMetaSdk) RemoveDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.RemoveDataMetaInput, controller *ontology_go_sdk.Account) (out io.RemoveDataMetaOutput, err error) {
+func (m *DataMetaSdk) RemoveDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.RemoveDataMetaInput) (out io.RemoveDataMetaOutput, err error) {
 
-	res, err := m.handleInner(ontIDAcc, input, io.RemoveDataMetaURI, controller)
+	res, err := m.handleInner(ontIDAcc, input, io.RemoveDataMetaURI)
 	out = res.(io.RemoveDataMetaOutput)
 	return
 }
 
-func (m *DataMetaSdk) handleInner(ontIDAcc *ontology_go_sdk.Account, input interface{}, uri string, controller *ontology_go_sdk.Account) (data interface{}, err error) {
+func (m *DataMetaSdk) handleInner(ontIDAcc *ontology_go_sdk.Account, input interface{}, uri string) (data interface{}, err error) {
 	ontID := "did:ont:" + ontIDAcc.Address.ToBase58()
 	bs, err := json.Marshal(input)
 	if err != nil {
@@ -121,7 +121,7 @@ func (m *DataMetaSdk) handleInner(ontIDAcc *ontology_go_sdk.Account, input inter
 	if err != nil {
 		return
 	}
-	err = m.ddxfContractSdk.GetOntologySdk().SignToTransaction(mutTx, controller)
+	err = m.ddxfContractSdk.GetOntologySdk().SignToTransaction(mutTx, ontIDAcc)
 	if err != nil {
 		return
 	}
