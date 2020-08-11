@@ -20,9 +20,8 @@ type TokenSdk struct {
 	ddxfContractSdk *ddxf_sdk.DdxfSdk
 }
 
-func NewTokenSdk(ddxfAPIAddr, ontologyApiAddr, tokenContract string, payer *ontology_go_sdk.Account) *TokenSdk {
+func NewTokenSdk(ddxfAPIAddr, ontologyApiAddr, tokenContract string) *TokenSdk {
 	ddxfContractSdk := ddxf_sdk.NewDdxfSdk(ontologyApiAddr)
-	ddxfContractSdk.SetPayer(payer)
 	return &TokenSdk{
 		ddxfAPIAddr:     ddxfAPIAddr,
 		tokenContract:   tokenContract,
@@ -53,6 +52,9 @@ func (ts *TokenSdk) VerifyToken(input io.VerifyTokenInput) (err error) {
 func (ts *TokenSdk) UseToken(ontIdAcc *ontology_go_sdk.Account, input io.UseTokenInput) (out io.UseTokenOutput, err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
+	}
+	if input.Address == "" {
+		input.Address = ontIdAcc.Address.ToHexString()
 	}
 
 	res, err := ts.request(ontIdAcc, input, io.UseTokenURI)
@@ -87,9 +89,13 @@ func (ts *TokenSdk) TransferToken(ontIdAcc *ontology_go_sdk.Account, input io.Tr
 }
 
 func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.GenerateTokenInput) (tokenId string, err error) {
+	if input.Auth == "" {
+		input.Auth = ontIdAcc.Address.ToHexString()
+	}
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
+
 	res, err := ts.request(ontIdAcc, input, io.GenerateTokenURI)
 	if err != nil {
 		return
@@ -186,11 +192,17 @@ func (ts *TokenSdk) CreateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
+	if input.Address == "" {
+		input.Address = ontIdAcc.Address.ToHexString()
+	}
+	if input.Template.Endpoint == "" {
+		input.Template.Endpoint = ts.ddxfAPIAddr
+	}
 	res, err := ts.request(ontIdAcc, input, io.CreateTokenTemplateURI)
 	if err != nil {
 		return
 	}
-	var out io.RemoveTokenAgentOutput
+	var out io.CreateTokenTemplateOutput
 	err = json.Unmarshal(res, &out)
 	if err != nil {
 		return

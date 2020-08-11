@@ -20,10 +20,9 @@ type DataMetaSdk struct {
 	ddxfContractSdk *ddxf_sdk.DdxfSdk
 }
 
-func NewDataMetaSdk(ddxfAPIAddr, ontologyApiAddr string, payer *ontology_go_sdk.Account) *DataMetaSdk {
+func NewDataMetaSdk(ddxfAPIAddr, ontologyApiAddr string) *DataMetaSdk {
 
 	ddxfContractSdk := ddxf_sdk.NewDdxfSdk(ontologyApiAddr)
-	ddxfContractSdk.SetPayer(payer)
 	return &DataMetaSdk{
 		ddxfAPIAddr:     ddxfAPIAddr,
 		ddxfContractSdk: ddxfContractSdk,
@@ -34,10 +33,20 @@ func (m *DataMetaSdk) SetDDXFAPIAddr(ddxfAPIAddr string) {
 	m.ddxfAPIAddr = ddxfAPIAddr
 }
 
-func (m *DataMetaSdk) CreateDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.CreateDataMetaInput) (out io.CreateDataMetaOutput, err error) {
+func (m *DataMetaSdk) CreateDataMeta(ontIDAcc *ontology_go_sdk.Account, input io.CreateDataMetaInput) (dataID string, err error) {
 
+	if input.Endpoint == "" {
+		input.Endpoint = m.ddxfAPIAddr
+	}
+	if len(input.OntIDs) == 0 {
+		input.OntIDs = []string{"did:ont:" + ontIDAcc.Address.ToBase58()}
+	}
 	res, err := m.handleInner(ontIDAcc, input, io.CreateDataMetaURI)
-	out = res.(io.CreateDataMetaOutput)
+	if err != nil {
+		return
+	}
+	out := res.(io.CreateDataMetaOutput)
+	dataID = out.DataID
 	return
 }
 

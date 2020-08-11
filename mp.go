@@ -22,9 +22,8 @@ type Marketplace struct {
 	ddxfContractSdk *ddxf_sdk.DdxfSdk
 }
 
-func NewMarketplace(ddxfAPIAddr, ontologyApiAddr, mpContract string, payer *ontology_go_sdk.Account) *Marketplace {
+func NewMarketplaceSdk(ddxfAPIAddr, ontologyApiAddr, mpContract string) *Marketplace {
 	ddxfContractSdk := ddxf_sdk.NewDdxfSdk(ontologyApiAddr)
-	ddxfContractSdk.SetPayer(payer)
 	return &Marketplace{
 		ddxfAPIAddr:     ddxfAPIAddr,
 		mpContract:      mpContract,
@@ -32,12 +31,21 @@ func NewMarketplace(ddxfAPIAddr, ontologyApiAddr, mpContract string, payer *onto
 	}
 }
 
-func (mp *Marketplace) PublishItem(ontIdAcc *ontology_go_sdk.Account, input io.PublishItemInput, seller, mpAcc *ontology_go_sdk.Account) (out io.PublishItemOutput, err error) {
+func (mp *Marketplace) PublishItem(ontIdAcc *ontology_go_sdk.Account, input io.PublishItemInput, seller *ontology_go_sdk.Account) (out io.PublishItemOutput, err error) {
 
 	if input.MPContract == "" {
 		input.MPContract = mp.mpContract
 	}
-	res, err := mp.handleInner(ontIdAcc, input, io.PublishItemURI, []*ontology_go_sdk.Account{seller, mpAcc})
+	if input.Seller == "" {
+		input.Seller = seller.Address.ToHexString()
+	}
+	if input.MetaEndpoint == "" {
+		input.MetaEndpoint = mp.ddxfAPIAddr
+	}
+	if input.AccountantContract == "" {
+		input.AccountantContract = mp.mpContract
+	}
+	res, err := mp.handleInner(ontIdAcc, input, io.PublishItemURI, []*ontology_go_sdk.Account{seller, ontIdAcc})
 	out = res.(io.PublishItemOutput)
 	return
 }
@@ -65,6 +73,9 @@ func (mp *Marketplace) BuyItem(ontIdAcc *ontology_go_sdk.Account, input io.BuyIt
 
 	if input.MPContract == "" {
 		input.MPContract = mp.mpContract
+	}
+	if input.Buyer == "" {
+		input.Buyer = buyer.Address.ToHexString()
 	}
 	res, err := mp.handleInner(ontIdAcc, input, io.BuyItemURI, []*ontology_go_sdk.Account{buyer})
 	out = res.(io.BuyItemOutput)

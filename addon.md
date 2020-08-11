@@ -36,8 +36,7 @@ import (
 
 ddxfAPIServer := ""
 ontologyApiAddr := "http://dappnode1.ont.io:20336"
-payer, _ := ontology_go_sdk.NewAccountFromPrivateKey("private key ...", signature.SHA256withECDSA)
-sdk := sdk.NewDataMetaSdk(ddxfAPIServer, ontologyApiAddr, payer)
+sdk := sdk.NewDataMetaSdk(ddxfAPIServer, ontologyApiAddr)
 ```
 
 
@@ -54,8 +53,7 @@ import (
 ddxfAPIServer := ""
 mpContract := ""
 ontologyApiAddr := "http://dappnode1.ont.io:20336"
-payer, _ := ontology_go_sdk.NewAccountFromPrivateKey("private key ...", signature.SHA256withECDSA)
-sdk := sdk.NewMarketplace(ddxfAPIServer, ontologyApiAddr, mpContract, payer)
+sdk := sdk.NewMarketplaceSdk(ddxfAPIServer, ontologyApiAddr, mpContract)
 ```
 
 
@@ -72,6 +70,5 @@ import (
 ddxfAPIServer := ""
 tokenContract := ""
 ontologyApiAddr := "http://dappnode1.ont.io:20336"
-payer, _ := ontology_go_sdk.NewAccountFromPrivateKey("private key ...", signature.SHA256withECDSA)
-sdk := sdk.NewTokenSdk(ddxfAPIServer, ontologyApiAddr, tokenContract, payer)
+sdk := sdk.NewTokenSdk(ddxfAPIServer, ontologyApiAddr, tokenContract)
 ```
