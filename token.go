@@ -88,7 +88,7 @@ func (ts *TokenSdk) TransferToken(ontIdAcc *ontology_go_sdk.Account, input io.Tr
 	return
 }
 
-func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.GenerateTokenInput) (tokenId string, err error) {
+func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.GenerateTokenInput) (txHash, tokenId string, err error) {
 	if input.Auth == "" {
 		input.Auth = ontIdAcc.Address.ToHexString()
 	}
@@ -105,7 +105,7 @@ func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.Ge
 	if err != nil {
 		return
 	}
-	txHash, err := ts.handTx(out.Tx, ontIdAcc)
+	txHash, err = ts.handTx(out.Tx, ontIdAcc)
 	if err != nil {
 		return
 	}
