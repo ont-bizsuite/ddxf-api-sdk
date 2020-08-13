@@ -123,7 +123,7 @@ buyer, _ := ontology_go_sdk.NewAccountFromPrivateKey("buyer private key ...", si
 
 
 
-tokenMeta := map[string]interface{
+tokenMeta := map[string]interface{}{
     "read": true,
     "write": true,
 }
