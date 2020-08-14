@@ -101,7 +101,7 @@ func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.Ge
 		return
 	}
 	var out io.GenerateTokenOutput
-	err = json.Unmarshal(res, out)
+	err = json.Unmarshal(res, &out)
 	if err != nil {
 		return
 	}
