@@ -122,7 +122,7 @@ func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.Ge
 	return
 }
 
-func (ts *TokenSdk) SetTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.SetTokenAgentInput) {
+func (ts *TokenSdk) SetTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.SetTokenAgentInput) (txHash string, err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
 	}
@@ -135,7 +135,7 @@ func (ts *TokenSdk) SetTokenAgent(ontIdAcc *ontology_go_sdk.Account, input io.Se
 	if err != nil {
 		return
 	}
-	_, err = ts.handTx(out.Tx, ontIdAcc)
+	txHash, err = ts.handTx(out.Tx, ontIdAcc)
 	return
 }
 
