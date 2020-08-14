@@ -214,7 +214,7 @@ func (ts *TokenSdk) CreateTokenTemplate(ontIdAcc *ontology_go_sdk.Account, input
 	evt, _ := ts.ddxfContractSdk.GetSmartCodeEvent(txHash)
 	for _, notify := range evt.Notify {
 		states := notify.States.([]interface{})
-		if len(states) != 4 && states[0] == "createTokenTemplate" {
+		if len(states) == 4 && states[0] == "createTokenTemplate" {
 			tokenTemplateId = states[3].(string)
 		}
 	}
