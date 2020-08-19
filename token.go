@@ -72,6 +72,33 @@ func (ts *TokenSdk) UseToken(ontIdAcc *ontology_go_sdk.Account, input io.UseToke
 	return
 }
 
+func (ts *TokenSdk) UseTokenByAgent(ontIdAcc *ontology_go_sdk.Account, input io.UseTokenByAgentInput) (out io.UseTokenOutput, err error) {
+	if input.TokenContract == "" {
+		input.TokenContract = ts.tokenContract
+	}
+	if input.Owner == "" {
+		input.Owner = ontIdAcc.Address.ToHexString()
+	}
+	if input.Agent == "" {
+		err = fmt.Errorf("agent parameter should be not nil")
+		return
+	}
+
+	res, err := ts.request(ontIdAcc, input, io.UseTokenByAgentURI)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(res, &out)
+	if err != nil {
+		return
+	}
+	_, err = ts.handTx(out.Tx, ontIdAcc)
+	if err != nil {
+		return
+	}
+	return
+}
+
 func (ts *TokenSdk) TransferToken(ontIdAcc *ontology_go_sdk.Account, input io.TransferTokenInput) (out io.TransferTokenOutput, err error) {
 	if input.TokenContract == "" {
 		input.TokenContract = ts.tokenContract
@@ -381,6 +408,7 @@ func (m *TokenSdk) request(ontIDAcc *ontology_go_sdk.Account, input interface{},
 		return
 	}
 	if code != http.StatusOK {
+		fmt.Println(string(res))
 		err = fmt.Errorf("error code is not http.StatusOk")
 		return
 	}
