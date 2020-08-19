@@ -408,8 +408,7 @@ func (m *TokenSdk) request(ontIDAcc *ontology_go_sdk.Account, input interface{},
 		return
 	}
 	if code != http.StatusOK {
-		fmt.Println(string(res))
-		err = fmt.Errorf("error code is not http.StatusOk")
+		err = fmt.Errorf("error code is not http.StatusOk:%v", string(res))
 		return
 	}
 	if res == nil {
