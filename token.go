@@ -115,8 +115,8 @@ func (ts *TokenSdk) GenerateToken(ontIdAcc *ontology_go_sdk.Account, input io.Ge
 	}
 	for _, notify := range evt.Notify {
 		states := notify.States.([]interface{})
-		if len(states) == 5 && states[0] == "generateDToken" {
-			tokenId = states[4].(string)
+		if len(states) == 6 && states[0] == "generateDToken" {
+			tokenId = states[5].(string)
 		}
 	}
 	return
